@@ -1,5 +1,5 @@
-const { countChildrens, filterData } = require("./app");
-const { data } = require("./data");
+import { countChildrens, filterData } from "./app.js";
+import { data } from "./data.js";
 
 /***
  * Tests for app.js functionalities

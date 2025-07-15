@@ -5,15 +5,23 @@
   "author": "Hélène Vermaut",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "scripts": {
     "start": "node app.js",
     "count": "node app.js --count",
     "filter": "node app.js --filter=ry",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "frontend": "vite --open"
   },
   "devDependencies": {
-    "jest": "^30.0.4"
+    "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
+    "jest": "^30.0.4",
+    "svelte": "^5.36.1",
+    "vite": "^5.4.11"
   }
 }

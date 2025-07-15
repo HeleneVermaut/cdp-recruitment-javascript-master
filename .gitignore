@@ -4,10 +4,17 @@ node_modules/
 # Coverage reports
 coverage/
 
+# Build outputs (Svelte/Vite)
+dist/
+dist-ssr/
+.svelte-kit/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Runtime data
 pids

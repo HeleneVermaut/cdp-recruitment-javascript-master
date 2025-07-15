@@ -1,4 +1,4 @@
-const { data } = require("./data");
+import { data } from "./data.js";
 
 const filterData = (data, pattern) => {
   // Return new array of countries with filtered people and animals
@@ -67,13 +67,9 @@ const main = () => {
 };
 
 // Only run main when the script is executed directly (not when imported) => for testing purposes
-if (require.main === module) {
+if (import.meta.url === new URL(process.argv[1], "file://").href) {
   main();
 }
 
 // Export functions for testing
-module.exports = {
-  filterData,
-  countChildrens,
-  main,
-};
+export { filterData, countChildrens, main };
