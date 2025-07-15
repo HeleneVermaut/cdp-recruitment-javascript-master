@@ -1,8 +1,20 @@
 const { data } = require("./data");
 
-const filterData = (data, pattern) => {
+const getValue = (arg) => {
+  const match = arg.match(/=(.+)/);
+  return match ? match[1] : null;
+};
+
+const filterData = (arg, countriesData) => {
+  const pattern = getValue(arg);
+
+  if (!pattern) {
+    console.error("No pattern provided for filtering.");
+    process.exit(1);
+  }
+
   // Return new array of countries with filtered people and animals
-  return data
+  return countriesData
     .map((country) => {
       // Return new array of people with filtered animals
       const filteredPeople = country.people
@@ -30,9 +42,13 @@ const filterData = (data, pattern) => {
     .filter((country) => country.people.length > 0); // Exclude countries with no people
 };
 
-const countChildrens = (data) => {
+const countChildren = (arg, countriesData) => {
+  if (getValue(arg)) {
+    console.error("Expected no arg for count command but got one.");
+    process.exit(1);
+  }
   // Return new array of countries with people and animals counts
-  return data.map((country) => ({
+  return countriesData.map((country) => ({
     // Add counts to country name
     name: `${country.name} [${country.people.length}]`,
     // Return new array of people with animal counts
@@ -43,27 +59,68 @@ const countChildrens = (data) => {
   }));
 };
 
+const displayHelp = () => {
+  console.log("Available commands:");
+  OPTIONS.forEach((option) => {
+    console.log(`  ${option.shortName}, ${option.name}: ${option.description}`);
+  });
+};
+
+// Could add more options like --silent
+const OPTIONS = [
+  {
+    name: "--filter",
+    shortName: "-f",
+    description:
+      "Filter the data by a specific pattern. Usage: --filter=<pattern>",
+    function: filterData,
+  },
+  {
+    name: "--count",
+    shortName: "-c",
+    description: "Count the data",
+    function: countChildren,
+  },
+  {
+    name: "--help",
+    shortName: "-h",
+    description: "Display help information",
+    function: displayHelp,
+  },
+];
+
 const main = () => {
   console.log("*** 🦕 Running 🦕 ***");
 
-  // Get arguments from the command line
   const args = process.argv.slice(2);
-  // Get --filter or --count command
-  const command = args[0];
 
-  // Check if the command is --filter or --count
-  if (command?.startsWith("--filter")) {
-    const searchByPattern = command.split("=")[1];
-    const filteredData = filterData(data, searchByPattern);
-    console.log(JSON.stringify(filteredData, null, 2));
-  } else if (command === "--count") {
-    const countedData = countChildrens(data);
-    console.log(JSON.stringify(countedData, null, 2));
-  } else {
-    // Display usage instructions
-    console.log("Usage: node app.js --filter=<pattern> || node app.js --count");
+  if (args.length === 0) {
+    displayHelp();
   }
-  console.log("*** 💥 End Running 💥 ***");
+
+  let result = [...data];
+
+  // Loop on options in order to guarantee execution order
+  let commandExecuted = false;
+  for (const option of OPTIONS) {
+    const foundArg = args.find((arg) => {
+      const sanitazedArg = arg.replace(/['"]/g, "").replace(/=.*$/, "");
+      return option.name === sanitazedArg || option.shortName === sanitazedArg;
+    });
+
+    if (foundArg) {
+      commandExecuted = true;
+      result = option.function(foundArg, result);
+    }
+  }
+
+  if (result) console.log(JSON.stringify(result, null, 2));
+
+  if (!commandExecuted) {
+    console.error("No command executed. Use --help for available commands.");
+    displayHelp();
+    process.exit(1);
+  }
 };
 
 // Only run main when the script is executed directly (not when imported) => for testing purposes
@@ -74,6 +131,7 @@ if (require.main === module) {
 // Export functions for testing
 module.exports = {
   filterData,
-  countChildrens,
+  countChildren,
   main,
+  OPTIONS,
 };

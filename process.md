@@ -26,9 +26,9 @@
 10. **Fonction découpée par step**
 11. **Optimisation de la fonction**
 
-### Développement de la fonction `countChildrens`
+### Développement de la fonction `countChildren`
 
-12. **Création de la fonction `countChildrens`**
+12. **Création de la fonction `countChildren`**
 13. **Fonction découpée par steps**
 14. **Optimisation de la fonction**
 
